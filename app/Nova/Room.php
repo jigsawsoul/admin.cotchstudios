@@ -127,13 +127,8 @@ class Room extends Resource
                 ])
                 ->button('Add equipment'),
 
-            Flexible::make('Gallery')
-                ->addLayout('Image', 'image', [
-                    Image::make('Image')
-                        ->disk('public')
-                ])
-                ->limit(4)
-                ->button('Add image'),
+            // TODO
+            // Image Gallery
 
             Boolean::make('Available')->nullable(),
 
