@@ -52,7 +52,9 @@ class User extends Resource
                 ->hideFromIndex()
                 ->sortable(),
 
-            Avatar::make('Avatar')->path('avatars'),
+            Avatar::make('Avatar')
+                ->disk(config('filesystems.default'))
+                ->path('avatars'),
 
             Text::make('First Name')
                 ->sortable()
