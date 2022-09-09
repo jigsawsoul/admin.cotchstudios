@@ -114,6 +114,9 @@ class User extends Resource
             Text::make('Social Type')
                 ->onlyOnDetail()
                 ->readonly(),
+
+            // TODO
+            // HasMany::make('Bookings')
         ];
     }
 
