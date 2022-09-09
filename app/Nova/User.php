@@ -2,12 +2,16 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
-use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Password;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Avatar;
+use Illuminate\Validation\Rules;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Currency;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class User extends Resource
@@ -32,7 +36,7 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'name', 'email',
+        'id', 'first_name', 'last_name', 'email',
     ];
 
     /**
@@ -44,12 +48,22 @@ class User extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            ID::make()->sortable(),
+            ID::make()
+                ->hideFromIndex()
+                ->sortable(),
 
-            Gravatar::make()->maxWidth(50),
+            Avatar::make('Avatar')->path('avatars'),
 
-            Text::make('Name')
+            Text::make('First Name')
                 ->sortable()
+                ->rules('required', 'max:255'),
+
+            Text::make('Last Name')
+                ->sortable()
+                ->rules('required', 'max:255'),
+
+            Text::make('Phone Number')
+                ->hideFromIndex()
                 ->rules('required', 'max:255'),
 
             Text::make('Email')
@@ -58,10 +72,46 @@ class User extends Resource
                 ->creationRules('unique:users,email')
                 ->updateRules('unique:users,email,{{resourceId}}'),
 
+            Currency::make('Credit')
+                ->hideFromIndex()
+                ->currency('GBP'),
+
+            Boolean::make('Verified', function () {
+                return $this->is_verified;
+            })->nullable(),
+
+            DateTime::make('Email Verified At')
+                ->onlyOnDetail()
+                ->readonly(),
+
+            Boolean::make('Bypass Identity')
+                ->hideFromIndex(),
+
+            Code::make('Stripe Identity')
+                ->readonly()
+                ->json(),
+
+            Boolean::make('Administrator')
+                ->hideFromIndex(),
+
             Password::make('Password')
                 ->onlyOnForms()
                 ->creationRules('required', Rules\Password::defaults())
                 ->updateRules('nullable', Rules\Password::defaults()),
+
+            Boolean::make('Marketing Email')
+                ->onlyOnDetail(),
+
+            Boolean::make('Marketing SMS')
+                ->onlyOnDetail(),
+
+            Text::make('Social ID')
+                ->onlyOnDetail()
+                ->readonly(),
+
+            Text::make('Social Type')
+                ->onlyOnDetail()
+                ->readonly(),
         ];
     }
 
