@@ -53,7 +53,7 @@ class User extends Resource
                 ->sortable(),
 
             Avatar::make('Avatar')
-                ->disk(config('filesystems.default'))
+                ->disk('public')
                 ->path('avatars'),
 
             Text::make('First Name')
