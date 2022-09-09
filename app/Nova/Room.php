@@ -131,7 +131,6 @@ class Room extends Resource
                 ->addLayout('Image', 'image', [
                     Image::make('Image')
                         ->disk('public')
-                        ->path('gallery')
                 ])
                 ->limit(4)
                 ->button('Add image'),
